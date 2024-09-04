@@ -13,7 +13,7 @@ class LoginSuccessScreen extends StatelessWidget {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomeScreen(toggleTheme: toggleTheme),
+          builder: (context) => HomeScreen(),
         ),
       );
     });

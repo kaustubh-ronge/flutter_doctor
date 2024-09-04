@@ -62,7 +62,7 @@ class _NavBarState extends State<NavBar> {
   }
 
   final List<Widget> _screens = [
-    HomeScreen(toggleTheme: () {}),
+    HomeScreen(),
     MessageScreen(),
     ScheduleScreen(),
     SettingsScreen(),
