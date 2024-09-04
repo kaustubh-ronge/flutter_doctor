@@ -1,0 +1,37 @@
+name: android_app
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  google_generative_ai: ^0.4.5
+  intl: ^0.19.0
+  firebase_core: ^3.3.0
+  cloud_firestore: ^5.2.1
+  table_calendar: ^3.1.2
+  crypt: ^4.3.1
+  firebase_auth: ^5.1.4
+  carousel_slider: ^5.0.0
+
+dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - images/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/doctor.jpeg"
