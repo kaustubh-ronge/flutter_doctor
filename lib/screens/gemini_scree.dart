@@ -16,7 +16,7 @@ class GeminiAIScreen extends StatefulWidget {
 class _GeminiAIScreenState extends State<GeminiAIScreen> {
   TextEditingController _userInput = TextEditingController();
 
-  static const apiKey = "AIzaSyC_YW9R4vxJIg-SziQxZ5JgxapU25S09t0";
+  static const apiKey = "API_KEY";
 
   final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
 
