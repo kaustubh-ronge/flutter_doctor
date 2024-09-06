@@ -313,17 +313,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   ThemeData get _darkTheme {
     return ThemeData(
-        primarySwatch: Colors.blueGrey,
-        brightness: Brightness.dark,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        scaffoldBackgroundColor: Colors.black,
-        cardColor: Colors.blue[850]!,
-        textTheme: TextTheme(
+      primarySwatch: Colors.blue,
+      brightness: Brightness.dark,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+      scaffoldBackgroundColor: Colors.black,
+      cardColor: Colors.grey[800],
+      textTheme: TextTheme(
         bodyLarge: TextStyle(color: Colors.white),
-    bodyMedium: TextStyle(color: Colors.white70),
-    ),
-    iconTheme: IconThemeData(color: Colors.white),
-
+        bodyMedium: TextStyle(color: Colors.white70),
+      ),
+      iconTheme: IconThemeData(color: Colors.white),
     );
   }
 }
@@ -343,20 +342,22 @@ class _SpecialtyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
-      margin: const EdgeInsets.only(right: 10),
-      width: 120,
+      margin: const EdgeInsets.only(right: 15),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [startColor, endColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.white,
-            blurRadius: 2,
+            color: Colors.black26,
+            blurRadius: 8,
             spreadRadius: 2,
           ),
         ],
@@ -366,17 +367,16 @@ class _SpecialtyCard extends StatelessWidget {
         children: [
           Icon(
             icon,
-            size: 60,
             color: Colors.white,
+            size: 50,
           ),
           const SizedBox(height: 10),
           Text(
             title,
-            textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 16,
               color: Colors.white,
-              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -384,3 +384,5 @@ class _SpecialtyCard extends StatelessWidget {
     );
   }
 }
+
+

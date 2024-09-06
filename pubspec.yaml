@@ -21,6 +21,8 @@ dependencies:
   web3dart: ^2.7.3
   http: ^1.2.2
   carousel_slider: ^5.0.0
+  shimmer: ^3.0.0
+  animated_background: ^2.0.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
