@@ -19,6 +19,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
   String? _selectedDoctorId;
   String? _selectedDoctorName;
 
+  // Controllers for the booking form
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _problemController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -29,7 +36,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Schedule'),
+        title: Text('Schedule', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         bottom: TabBar(
           controller: _tabController,
           tabs: [
@@ -40,7 +47,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
           indicatorColor: Color(0xFF005EB8),
           labelColor: Color(0xFF005EB8),
           unselectedLabelColor: Colors.black54,
+          labelStyle: TextStyle(fontSize: 16),
         ),
+        backgroundColor: Color(0xFFf8f9fa), // Light background for the AppBar
+        elevation: 4,
       ),
       body: TabBarView(
         controller: _tabController,
@@ -81,7 +91,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
               child: ListTile(
                 contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 title: Text(
-                  'Name: ${appointment['name']}',
+                  '${appointment['name']}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -92,7 +102,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
                   child: Text(
                     'Date: ${appointment['date']}\n'
                         'Time Slot: ${appointment['timeSlot']}\n'
-                        'Doctor: ${appointment['doctorName']}',
+                        'Doctor: ${appointment['doctorName']}\n',
+                        // 'Problem: ${appointment['problem']}',
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
@@ -217,14 +228,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
 
   Widget _buildCalendar() {
     return Container(
+      margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: Colors.black26,
             blurRadius: 10,
-            spreadRadius: 3,
+            spreadRadius: 2,
           ),
         ],
       ),
@@ -271,44 +283,44 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
   Widget _buildTimeSlots() {
     return Expanded(
       child: GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 4,
-      childAspectRatio: 1.5,
-    ),
-    itemCount: 8,
-    itemBuilder: (context, index) {
-    final timeSlot = '${index + 9}:00 ${index + 9 > 11 ? "PM" : "AM"}';
-    return InkWell(
-    onTap: () {
-    setState(() {
-    _selectedTimeSlot = timeSlot;
-    });
-    },
-    child: Container(
-    margin: EdgeInsets.all(8),
-    decoration: BoxDecoration(
-    color: _selectedTimeSlot == timeSlot ? Colors.green : Color(0xFF005EB8),
-    borderRadius: BorderRadius.circular(15),
-    boxShadow: [
-    BoxShadow(
-    color: Colors.black26,
-    blurRadius: 6,
-    spreadRadius: 2,
-    ),
-    ],
-    ),
-    alignment: Alignment.center,
-    child: Text(
-    timeSlot,
-    style: TextStyle(
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
-    ),
-
-    ),
-    ),
-    );
-    },
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          childAspectRatio: 1.5,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: 8,
+        itemBuilder: (context, index) {
+          final timeSlot = '${index + 9}:00 AM';
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                _selectedTimeSlot = timeSlot;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: _selectedTimeSlot == timeSlot ? Colors.blue : Colors.grey[200],
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 5,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                timeSlot,
+                style: TextStyle(
+                  color: _selectedTimeSlot == timeSlot ? Colors.white : Colors.black,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -316,55 +328,93 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
   void _showBookingForm() {
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Confirm Appointment'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
+      builder: (context) => AlertDialog(
+        title: Text('Book Appointment'),
+        content: SingleChildScrollView(
+          child: Column(
             children: [
-              Text('Doctor: $_selectedDoctorName'),
-              Text('Date: ${_selectedDay.toLocal()}'.split(' ')[0]),
-              Text('Time Slot: $_selectedTimeSlot'),
+              _buildTextField(_nameController, 'Name'),
+              _buildTextField(_ageController, 'Age'),
+              _buildTextField(_genderController, 'Gender'),
+              _buildTextField(_problemController, 'Problem'),
+              _buildTextField(_descriptionController, 'Description'),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                // Logic to save the appointment in Firestore
-                _saveAppointment();
-                Navigator.of(context).pop();
-              },
-              child: Text('Confirm'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showSelectDoctorMessage() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Please select a doctor and a time slot.'),
-        duration: Duration(seconds: 3),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _submitAppointment();
+            },
+            child: Text('Submit'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Cancel'),
+          ),
+        ],
       ),
     );
   }
 
-  void _saveAppointment() {
+  Widget _buildTextField(TextEditingController controller, String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
+  void _submitAppointment() {
+    final name = _nameController.text;
+    final age = _ageController.text;
+    final gender = _genderController.text;
+    final problem = _problemController.text;
+    final description = _descriptionController.text;
+
     FirebaseFirestore.instance.collection('appointments').add({
+      'name': name,
+      'age': age,
+      'gender': gender,
+      'date': _selectedDay.toIso8601String(),
+      'timeSlot': _selectedTimeSlot,
       'doctorId': _selectedDoctorId,
       'doctorName': _selectedDoctorName,
-      'date': '${_selectedDay.toLocal()}'.split(' ')[0],
-      'timeSlot': _selectedTimeSlot,
-      'userId': 'user123', // Replace with the current user's ID
-      'name': 'John Doe', // Replace with the current user's name
+      'problem': problem,
+      'description': description,
+    }).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Appointment booked successfully')),
+      );
+      setState(() {
+        _nameController.clear();
+        _ageController.clear();
+        _genderController.clear();
+        _problemController.clear();
+        _descriptionController.clear();
+        _selectedDay = DateTime.now();
+        _selectedTimeSlot = null;
+        _selectedDoctorId = null;
+        _selectedDoctorName = null;
+      });
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to book appointment: $error')),
+      );
     });
+  }
+
+  void _showSelectDoctorMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Please select a doctor first')),
+    );
   }
 }

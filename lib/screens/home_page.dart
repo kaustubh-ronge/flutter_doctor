@@ -63,11 +63,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           color: _isDarkMode ? Colors.green : const Color(0xFF005EB8),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: _isDarkMode
+                              ? LinearGradient(
+                            colors: [Colors.green, Colors.teal],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )
+                              : LinearGradient(
+                            colors: [Color(0xFF005EB8), Color(0xFF003D80)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
                           boxShadow: [
-                            const BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6,
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 10,
                               spreadRadius: 4,
                             ),
                           ],
@@ -77,9 +88,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Container(
                               padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
+                              decoration: BoxDecoration(
                                 color: Colors.white,
                                 shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 6,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
                               ),
                               child: Icon(
                                 Icons.add,
@@ -110,6 +128,63 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 20),
                   ImageCarousel(),
+                  const SizedBox(height: 20),
+                  // Specialty Cards Section
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Specialties",
+                          style: TextStyle(
+                            fontSize: 23,
+                            fontWeight: FontWeight.w600,
+                            color: theme.textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Container(
+                          height: 150,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              _SpecialtyCard(
+                                title: "Cardiology",
+                                icon: Icons.favorite,
+                                startColor: Colors.red,
+                                endColor: Colors.pink,
+                              ),
+                              _SpecialtyCard(
+                                title: "Dentistry",
+                                icon: Icons.north,
+                                startColor: Colors.blue,
+                                endColor: Colors.lightBlue,
+                              ),
+                              _SpecialtyCard(
+                                title: "Orthopedics",
+                                icon: Icons.accessibility,
+                                startColor: Colors.green,
+                                endColor: Colors.lightGreen,
+                              ),
+                              _SpecialtyCard(
+                                title: "Dermatology",
+                                icon: Icons.psychology,
+                                startColor: Colors.orange,
+                                endColor: Colors.deepOrange,
+                              ),
+                              _SpecialtyCard(
+                                title: "Pediatrics",
+                                icon: Icons.child_care,
+                                startColor: Colors.purple,
+                                endColor: Colors.pinkAccent,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 15),
                   Padding(
                     padding: const EdgeInsets.only(left: 15),
@@ -135,10 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       final doctors = snapshot.data!.docs;
 
-                      return GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                        ),
+                      return ListView.builder(
                         itemCount: doctors.length,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -148,59 +220,56 @@ class _HomeScreenState extends State<HomeScreen> {
                           final speciality = doctor['speciality'] ?? 'Unknown Speciality';
                           final rating = doctor['rating']?.toString() ?? '0.0';
 
-                          return InkWell(
-                            onTap: () {},
-                            child: Container(
-                              margin: const EdgeInsets.all(10),
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              decoration: BoxDecoration(
-                                color: theme.cardColor,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  const BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 4,
-                                    spreadRadius: 2,
-                                  ),
-                                ],
+                          return Container(
+                            margin: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.blueGrey.shade700, Colors.blueGrey.shade900],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 8,
+                                  spreadRadius: 2,
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.local_hospital,
+                                size: 60,
+                                color: theme.iconTheme.color,
+                              ),
+                              title: Text(
+                                name,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.textTheme.bodyLarge?.color,
+                                ),
+                              ),
+                              subtitle: Text(
+                                speciality,
+                                style: TextStyle(
+                                  color: theme.textTheme.bodyLarge?.color?.withOpacity(0.7),
+                                ),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    Icons.local_hospital, // Replace with a doctor logo if available
-                                    size: 60,
-                                    color: theme.iconTheme.color,
+                                    Icons.star,
+                                    color: Colors.amber,
                                   ),
                                   Text(
-                                    name,
+                                    rating,
                                     style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
                                       color: theme.textTheme.bodyLarge?.color,
                                     ),
-                                  ),
-                                  Text(
-                                    speciality,
-                                    style: TextStyle(
-                                      color: theme.textTheme.bodyLarge?.color?.withOpacity(0.7),
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
-                                      ),
-                                      Text(
-                                        rating,
-                                        style: TextStyle(
-                                          color: theme.textTheme.bodyLarge?.color,
-                                        ),
-                                      ),
-                                    ],
                                   ),
                                 ],
                               ),
@@ -216,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: NavBar(toggleTheme: () { _toggleTheme(); },), // Update if needed
+      bottomNavigationBar: NavBar(toggleTheme: () { _toggleTheme(); },),
       floatingActionButton: FloatingActionButton(
         onPressed: _toggleTheme,
         child: Icon(
@@ -244,16 +313,74 @@ class _HomeScreenState extends State<HomeScreen> {
 
   ThemeData get _darkTheme {
     return ThemeData(
-      primarySwatch: Colors.blueGrey,
-      brightness: Brightness.dark,
-      visualDensity: VisualDensity.adaptivePlatformDensity,
-      scaffoldBackgroundColor: Colors.black,
-      cardColor: Colors.grey[850]!, // Adjust card color for dark mode
-      textTheme: TextTheme(
+        primarySwatch: Colors.blueGrey,
+        brightness: Brightness.dark,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        scaffoldBackgroundColor: Colors.black,
+        cardColor: Colors.blue[850]!,
+        textTheme: TextTheme(
         bodyLarge: TextStyle(color: Colors.white),
-        bodyMedium: TextStyle(color: Colors.white70),
+    bodyMedium: TextStyle(color: Colors.white70),
+    ),
+    iconTheme: IconThemeData(color: Colors.white),
+
+    );
+  }
+}
+
+class _SpecialtyCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color startColor;
+  final Color endColor;
+
+  _SpecialtyCard({
+    required this.title,
+    required this.icon,
+    required this.startColor,
+    required this.endColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(right: 10),
+      width: 120,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [startColor, endColor],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white,
+            blurRadius: 2,
+            spreadRadius: 2,
+          ),
+        ],
       ),
-      iconTheme: IconThemeData(color: Colors.white),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 60,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
